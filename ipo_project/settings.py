@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+import dj_database_url
+import os
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#jlhq_!f4c-rse-(8_a=eh5mp@vjjhemi_2&h$nxz#cleit)k&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['ipo-backend-n3bz.onrender.com']
 
@@ -79,16 +83,19 @@ WSGI_APPLICATION = 'ipo_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ipo_db',
-        'USER': 'postgres',
-        'PASSWORD': 'zaid',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),       # Render-provided name
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
+
 
 
 # Password validation
