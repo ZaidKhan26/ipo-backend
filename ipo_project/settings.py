@@ -11,9 +11,17 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
 import dj_database_url
+import dotenv
 import os
+
+dotenv.load_dotenv()  # loads the .env file
+print("DATABASE_URL from env:", os.getenv("DATABASE_URL"))
+
+
+DATABASES = {
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+}
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -60,7 +68,13 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True  # Allow React to access API
 
+CORS_ALLOWED_ORIGINS = [
+    "https://ipo-frontend.vercel.app", # Replace with your frontend domain
+    "http://localhost:5173",  # for local dev
+]
+
 ROOT_URLCONF = 'ipo_project.urls'
+
 
 TEMPLATES = [
     {
@@ -82,20 +96,6 @@ WSGI_APPLICATION = 'ipo_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-import os
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),       # Render-provided name
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
-    }
-}
-
 
 
 # Password validation
@@ -132,14 +132,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -156,3 +153,19 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
+STATIC_URL = '/static/'
+
+# Tell Django where to collect all static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# (Optional) If you have a 'static' folder in your app for custom files like CSS, JS
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Add WhiteNoise for serving static files efficiently
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
+# Use Whitenoise storage backend
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

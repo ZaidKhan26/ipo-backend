@@ -4,7 +4,7 @@ from .models import Company, IPO, Document
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = '__all__'
+        fields = ['id', 'name']
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,9 +12,9 @@ class DocumentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class IPOSerializer(serializers.ModelSerializer):
-    company = CompanySerializer(read_only=True)
-    documents = DocumentSerializer(many=True, read_only=True)
-
+    # company = CompanySerializer(read_only=True)
+    # documents = DocumentSerializer(many=True, read_only=True)
+    company_name = serializers.CharField(source='company.name', read_only=True)
     class Meta:
         model = IPO
         fields = '__all__'
