@@ -12,9 +12,9 @@ class DocumentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class IPOSerializer(serializers.ModelSerializer):
-    # company = CompanySerializer(read_only=True)
-    # documents = DocumentSerializer(many=True, read_only=True)
     company_name = serializers.CharField(source='company.name', read_only=True)
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
+
     class Meta:
         model = IPO
         fields = '__all__'

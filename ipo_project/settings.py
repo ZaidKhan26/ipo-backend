@@ -15,13 +15,20 @@ import dj_database_url
 import dotenv
 import os
 
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 dotenv.load_dotenv()  # loads the .env file
 print("DATABASE_URL from env:", os.getenv("DATABASE_URL"))
 
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,8 +44,11 @@ SECRET_KEY = 'django-insecure-#jlhq_!f4c-rse-(8_a=eh5mp@vjjhemi_2&h$nxz#cleit)k&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['ipo-backend-n3bz.onrender.com']
-
+ALLOWED_HOSTS = [
+    'ipo-backend-n3bz.onrender.com'
+    'localhost',
+    '127.0.0.1',
+    ]
 
 # Application definition
 
@@ -58,6 +68,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -69,8 +80,12 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True  # Allow React to access API
 
 CORS_ALLOWED_ORIGINS = [
-    "https://ipo-frontend.vercel.app", # Replace with your frontend domain
+    "https://ipo-frontend-lac.vercel.app", # Replace with your frontend domain
     "http://localhost:5173",  # for local dev
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://ipo-frontend-lac.vercel.app",
 ]
 
 ROOT_URLCONF = 'ipo_project.urls'
@@ -157,8 +172,7 @@ SIMPLE_JWT = {
 STATIC_URL = '/static/'
 
 # Tell Django where to collect all static files
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # (Optional) If you have a 'static' folder in your app for custom files like CSS, JS
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
